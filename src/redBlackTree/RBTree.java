@@ -7,8 +7,7 @@ import binaryTree.BSTree;
  * Красно-чёрное дерево (red-black tree, RB tree).
  * Нелистовой узел может иметь меньше двух потомков.
  * Узел не имеющий потомков является листовым.
- *
- * см. случаи: https://ru.wikipedia.org/wiki/Красно-чёрное_дерево
+ * см. случаи: <a href="https://ru.wikipedia.org/wiki/Красно-чёрное_дерево">Красно-чёрное_дерево</a>
  */
 public class RBTree extends BSTree {
     public RBTree() {
@@ -55,7 +54,6 @@ public class RBTree extends BSTree {
         parent = null;
         grand = null;
         grand2 = null;
-        grand3 = null;
         nRed = 0;
         while (current != null && current.getKey() != key) {
             grand3 = grand2;
@@ -133,7 +131,6 @@ public class RBTree extends BSTree {
         parent = null;
         grand = null;
         grand2 = null;
-        grand3 = null;
         while (current != null) {
             grand3 = grand2;
             grand2 = grand;
@@ -173,20 +170,11 @@ public class RBTree extends BSTree {
         }
 
         // Корневой верхний всегда черный (случай 1 wiki)
-        if(parent == getRoot()) {
-                parent.setIsRed(false);
-        }
         // Некорневой верхний - красный (случай 2 wiki)
-        else {
-                parent.setIsRed(true);
-        }
+        parent.setIsRed(parent != getRoot());
         // Потомки всегда черные (случай 3 wiki)
-        if (childLeft != null) {
-                childLeft.setIsRed(false);
-        }
-        if(childRight != null) {
-                childRight.setIsRed(false);
-        }
+        childLeft.setIsRed(false);
+        childRight.setIsRed(false);
     }
     /**
      * Повернуть красную линию.
@@ -196,13 +184,10 @@ public class RBTree extends BSTree {
      * @param parent узел - ближайший родственник узла node, который, возможно, также входит в красную линию
      * @param grand узел - родственник предыдущего родственника
      * @param grand2 узел - родственник предыдущего родственника
-     * @return тип поворота: -1 = поворот влево; 0 = нет поворота; 1 = поворот вправо
      */
-    public int turnRedLine(Node node, Node parent, Node grand, Node grand2) {
-        int result = 0;
-
+    public void turnRedLine(Node node, Node parent, Node grand, Node grand2) {
         if(grand == null || node == null) {
-            return 0;
+            return;
         }
 
         // Красный узел принадлежит красному родителю
@@ -235,8 +220,6 @@ public class RBTree extends BSTree {
                     grand.setIsRed(true);
                     parent.setIsRed(false);
                     // >>>
-
-                    result = 1;
                 }
 
                 // Правый поворот левой красной линии (N + P) с внутренним внуком (N)
@@ -270,8 +253,6 @@ public class RBTree extends BSTree {
                     grand.setIsRed(true);
                     node.setIsRed(false);
                     // >>>
-
-                    result = 1;
                 }
             }
 
@@ -303,8 +284,6 @@ public class RBTree extends BSTree {
                     grand.setIsRed(true);
                     parent.setIsRed(false);
                     // >>>
-
-                    result = -1;
                 }
                 // Связь красных узлов обнаружена как левая
                 else {
@@ -338,12 +317,9 @@ public class RBTree extends BSTree {
                     grand.setIsRed(true);
                     node.setIsRed(false);
                     // >>>
-
-                    result = -1;
                 }
             }
         }
-        return result;
     }
 
 }
