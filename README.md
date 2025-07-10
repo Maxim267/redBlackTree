@@ -22,16 +22,16 @@
 > I - **возрастание** значений ключей
 <br>
 
-![Increasing keys](./img/Increasing keys.png)
+![Increasing keys](./img/Increasing_keys.png)
 
 > II - **убывание** значений ключей
 <br>
 
-![Decreasing keys](./img/Decreasing keys.png)
+![Decreasing keys](./img/Decreasing_keys.png)
 
 > III - **случайные** значения ключей
 <br>
 
-![Random keys](./img/Random keys.png)
+![Random keys](./img/Random_keys.png)
 
 <br>
