@@ -17,21 +17,18 @@
 >> если использовать команду в коде приложения Main.java<br/>
 >> tree.displayTree(0);
 
+<br/>
+
 - Результаты запуска приложения с разными видами генерации ключа
 
-> I - **возрастание** значений ключей
-<br>
 
+> I - **возрастание** значений ключей
 ![Increasing keys](./img/Increasing_keys.png)
 
 > II - **убывание** значений ключей
-<br>
-
 ![Decreasing keys](./img/Decreasing_keys.png)
 
 > III - **случайные** значения ключей
-<br>
-
 ![Random keys](./img/Random_keys.png)
 
 <br>
