@@ -1,4 +1,3 @@
-import binaryTree.Node;
 import redBlackTree.RBTree;
 
 import java.io.IOException;
@@ -7,7 +6,6 @@ import java.time.LocalDateTime;
 //import java.util.HashMap;
 //import java.util.Map;
 
-@SuppressWarnings("")
 public class Main {
     public static void main(String[] args)  throws IOException {
 
@@ -71,7 +69,7 @@ public class Main {
 
         // Проверить на наличие красных линий (их не должно быть)
         // Не рекомендуется использовать этот рекурсивный метод для огромных деревьев, чтобы не получить ошибку переполнения стека
-        tree.checkRedBlackTree(tree.getRoot(), 0);
+        tree.alarmRedLines(tree.getRoot(), 0);
 
         // Время окончания обработки
         System.out.println(LocalDateTime.now());

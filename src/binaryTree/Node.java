@@ -25,17 +25,17 @@ public class Node {
      */
     private Node rightChild;
     /**
-     * Конструктор класса {@code Node}
-     * @param key целочисленное значение ключа дерева
+     * Создает новый {@code Node} с заданным значением ключа
+     * @param key целочисленное значение ключа
      */
     public Node(int key) {
         iData = key;
         sData = null;
     }
     /**
-     * Конструктор класса {@code Node}
-     * @param key целочисленное значение ключа дерева
-     * @param data строковые данные как парное значение ключа
+     * Создает новый {@code Node} с заданными значением ключа и данными
+     * @param key целочисленное значение ключа
+     * @param data строковые данные
      */
     public Node(int key, String data) {
         iData = key;
@@ -48,21 +48,21 @@ public class Node {
     }
     /**
      * Установить значение ключа узла
-     * @param key значение ключа узла
+     * @param key целочисленное значение ключа узла
      */
     public void setKey(int key) {
         iData = key;
     }
     /**
      * Получить значение ключа узла
-     * @return значение ключа текущего узла
+     * @return значение ключа узла
      */
     public int getKey() {
         return iData;
     }
     /**
-     * Получить данные по ключу
-     * @return данные по заданному ключу
+     * Получить данные узла
+     * @return данные узла
      */
     public String getData() {
         return sData;
@@ -96,7 +96,7 @@ public class Node {
         return rightChild;
     }
     /**
-     * Установить левый дочерний узел
+     * Установить правый дочерний узел
      * @param right узел
      */
     public void setRightChild(Node right) {
