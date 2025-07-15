@@ -233,27 +233,27 @@ public class BSTree {
      *              Не двоичное значение будет автоматически преобразовано к ближайшему двоичному значению (вверх или вниз).
      */
     public void displayTree(int blanks) {
-        Stack global = new Stack();
+        Stack<Node> global = new Stack<>();
         global.push(root);
         int nBlank = getMaxBlank(blanks);
-        boolean isNewRow = false;
+        boolean isNewRow = true;
         System.out.println("<<< Red-Black tree");
-        while(isNewRow == false) {
-            isNewRow = true;
-            Stack local = new Stack();
+        while(isNewRow) {
+            isNewRow = false;
+            Stack<Node> local = new Stack<>();
             for(int j = 0; j < nBlank; ++j) {
                 System.out.print(" ");
             }
-            while(global.isEmpty() == false) {
-                Node current = (Node) global.pop();
-                int len = 0;
+            while(!global.isEmpty()) {
+                Node current = global.pop();
+                int len;
                 if(current != null) {
                     System.out.print(getTextColorNode(current) + current.getKey() + getTextColorDefault());
                     len = Integer.toString(current.getKey()).length();
                     local.push(current.getLeftChild());
                     local.push(current.getRightChild());
                     if (current.getLeftChild() != null || current.getRightChild() != null) {
-                        isNewRow = false;
+                        isNewRow = true;
                     }
                 }
                 else {
@@ -268,7 +268,7 @@ public class BSTree {
             }
             System.out.println();
             nBlank /= 2;
-            while(local.isEmpty() == false) {
+            while(!local.isEmpty()) {
                 global.push(local.pop());
             }
         }
@@ -296,47 +296,47 @@ public class BSTree {
      */
     public void displayTree(String path, Charset charset, int blanks) throws IOException {
 
-        PrintWriter out = new PrintWriter(path, charset);
-        Stack global = new Stack();
-        global.push(root);
-        int nBlank = getMaxBlank(blanks);
-        boolean isNewRow = false;
-        out.println("<<< Red-Black tree");
-        while(isNewRow == false) {
-            isNewRow = true;
-            Stack local = new Stack();
-            for(int j = 0; j < nBlank; ++j) {
-                out.print(" ");
-            }
-            while(global.isEmpty() == false) {
-                Node current = (Node) global.pop();
-                int len = 0;
-                if(current != null) {
-                    out.print(current.getKey());
-                    len = Integer.toString(current.getKey()).length();
-                    local.push(current.getLeftChild());
-                    local.push(current.getRightChild());
-                    if (current.getLeftChild() != null || current.getRightChild() != null) {
-                        isNewRow = false;
-                    }
-                }
-                else {
-                    out.print("--");
-                    len = 2;
-                    local.push(null);
-                    local.push(null);
-                }
-                for(int j = 0; j < nBlank * 2 - (len); ++j) {
+        try(PrintWriter out = new PrintWriter(path, charset)) {
+            Stack<Node> global = new Stack<>();
+            global.push(root);
+            int nBlank = getMaxBlank(blanks);
+            boolean isNewRow = true;
+            out.println("<<< Red-Black tree");
+            while (isNewRow) {
+                isNewRow = false;
+                Stack<Node> local = new Stack<>();
+                for (int j = 0; j < nBlank; ++j) {
                     out.print(" ");
                 }
+                while (!global.isEmpty()) {
+                    Node current = global.pop();
+                    int len;
+                    if (current != null) {
+                        out.print(current.getKey());
+                        len = Integer.toString(current.getKey()).length();
+                        local.push(current.getLeftChild());
+                        local.push(current.getRightChild());
+                        if (current.getLeftChild() != null || current.getRightChild() != null) {
+                            isNewRow = true;
+                        }
+                    } else {
+                        out.print("--");
+                        len = 2;
+                        local.push(null);
+                        local.push(null);
+                    }
+                    for (int j = 0; j < nBlank * 2 - (len); ++j) {
+                        out.print(" ");
+                    }
+                }
+                out.println();
+                nBlank /= 2;
+                while (!local.isEmpty()) {
+                    global.push(local.pop());
+                }
             }
-            out.println();
-            nBlank /= 2;
-            while(local.isEmpty() == false) {
-                global.push(local.pop());
-            }
+            out.println(">>>");
+            out.flush();
         }
-        out.println(">>>");
-        out.flush();
     }
 }
