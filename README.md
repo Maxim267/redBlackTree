@@ -28,7 +28,7 @@ RBTree<Integer, String> **tree** = new RBTree<>();<br/>
 
 - Результат запуска приложения
 > O - **Сравнение** формирования деревьев с целыми и строковыми ключами (с данными)<br/>
-![Random keys](C:\wrk\Java\Alg\redBlackTree\img\Compare_trees.png)
+![Random keys](./img/Compare_trees.png)
 
 > I - последовательное **возрастание** целых ключей.<br/>
 ![Increasing keys](./img/Increasing_keys.png)

@@ -83,7 +83,7 @@ class TestDebug {
     }
 
     //   I - на возрастание ключей
-    public static RBTree<Integer, String> IncreasingKeyTree(int count) throws IOException {
+    public static RBTree<Integer, String> IncreasingKeyTree(int count) {
         System.out.println("\nКрасно-черное дерево с целыми ключами на возрастание:");
 
         RBTree<Integer, String> tree = new RBTree<>();
@@ -91,8 +91,7 @@ class TestDebug {
         // Время начала обработки
         long start = System.nanoTime();
 
-        int cnt = count;
-        for(int j = 1; j <= cnt; ++j) {
+        for(int j = 1; j <= count; ++j) {
             // Добавить ключ
             tree.add(j);
             if(j % 1_000_000 == 0) {
@@ -103,13 +102,13 @@ class TestDebug {
         // Время окончания обработки
         long finish = System.nanoTime();
 
-        TestDebug.Info(1, cnt, start, finish, tree.getRoot().getKey().toString(), tree.size());
+        TestDebug.Info(1, count, start, finish, tree.getRoot().getKey().toString(), tree.size());
 
         return tree;
     }
 
     // II - на убывание ключей.
-    public static RBTree<Integer, String> DecreasingKeyTree(int count) throws IOException {
+    public static RBTree<Integer, String> DecreasingKeyTree(int count) {
         System.out.println("\nКрасно-черное дерево с целыми ключами на убывание:");
 
         RBTree<Integer, String> tree = new RBTree<>();
@@ -117,8 +116,7 @@ class TestDebug {
         // Время начала обработки
         long start = System.nanoTime();
 
-        int cnt = count;
-        for(int j = cnt; j > 0; --j) {
+        for(int j = count; j > 0; --j) {
             // Добавить ключ
             tree.add(j);
         }
@@ -126,13 +124,13 @@ class TestDebug {
         // Время окончания обработки
         long finish = System.nanoTime();
 
-        TestDebug.Info(1, cnt, start, finish, tree.getRoot().getKey().toString(), tree.size());
+        TestDebug.Info(1, count, start, finish, tree.getRoot().getKey().toString(), tree.size());
 
         return tree;
     }
 
     // III - случайные целые ключи
-    public static RBTree<Integer, String> RandomKeyTree(int count) throws IOException {
+    public static RBTree<Integer, String> RandomKeyTree(int count) {
         System.out.println("\nКрасно-черное дерево с случайными целыми ключами:");
 
         RBTree<Integer, String> tree = new RBTree<>();
@@ -141,7 +139,7 @@ class TestDebug {
         long start = System.nanoTime();
 
         int j = 0;
-        Map<Integer, Integer> map = new HashMap();
+        Map<Integer, Integer> map = new HashMap<>();
         while(j < count) {
             int val = (int) (java.lang.Math.random() * count) + 1;
             if (!map.containsKey(val)) {
