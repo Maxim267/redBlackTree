@@ -173,7 +173,7 @@ public class Main {
         int count = 35;
         RBTree<Integer, String> tree = TestDebug.IncreasingKeyTree(count);
         tree.out.display(0);
-        // При выводе в файл используется AppConstants.SYMBOL_RED: "*" - символ красного цвета узла, например, "*123".
+        // При выводе в файл ключ красного узла предваряется символом "*" (используется AppConstants.SYMBOL_RED)
         // tree.out.display(0, "file1.txt");
 
         // II - последовательное убывание целых ключей.
@@ -185,5 +185,12 @@ public class Main {
         RBTree<Integer, String> tree3 = TestDebug.RandomKeyTree(35);
         tree3.out.display(64);
         // tree3.out.display(64, "file3.txt");
+
+        // Проверить на наличие красных линий (их не должно быть).
+        // Не рекомендуется использовать этот рекурсивный метод для огромных деревьев, чтобы не получить ошибку переполнения стека.
+        // tree3.alarmRedLines(tree3.getRoot(), 0);
+
+        // Поиск узла
+        // tree3.findNodeExt(30);
     }
 }
