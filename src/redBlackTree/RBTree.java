@@ -1,22 +1,94 @@
 package redBlackTree;
 
-import binaryTree.Node;
-import binaryTree.BSTree;
+import binarySearchTree.BSNode;
+import binarySearchTree.BSTree;
+import utils.calculations.MathUtils;
+import utils.constants.AppConstants;
+import utils.output.DualOutput;
+import utils.output.IntDisplay;
+
+import java.util.Stack;
 
 /**
  * Красно-чёрное дерево (red-black tree, RB tree).
  * Нелистовой узел может иметь одного или двух потомков.
  * Листовой узел не имеет потомков.
- * см. web-описание RB tree: <a href="https://ru.wikipedia.org/wiki/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D0%BE-%D1%87%D1%91%D1%80%D0%BD%D0%BE%D0%B5_%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE">Красно-чёрное_дерево</a>
- * см. в коде пометки соответствующие случаям в web-описании как "wiki", например, "случай 5 wiki".
+ * @see <a href="https://ru.wikipedia.org/wiki/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D0%BE-%D1%87%D1%91%D1%80%D0%BD%D0%BE%D0%B5_%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE">Красно-черное дерево</a>
+ * В коде пометки "wiki" соответствуют случаям в web-описании, например, "случай 5 wiki".
+ * @param <K> тип ключей, поддерживаемых этим деревом.
+ * @param <V> тип соответствующих ключам данных.
  */
-public class RBTree extends BSTree {
+public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
     /**
-     * Создает новое красно-черное дерево {@code RBTree}
+     * Перечисление цвета.
+     */
+    private enum eColor {
+        /**
+         * Красный цвет.
+         */
+        RED(AppConstants.COLOR_RED),
+        /**
+         * Черный цвет.
+         */
+        BLACK(AppConstants.COLOR_WHITE);
+
+        /**
+         * Значение цвета.
+         */
+        private final String value;
+
+        /**
+         * Создает значение цвета.
+         */
+        eColor(String val) {
+            value = val;
+        }
+        /**
+         * Получает значение цвета.
+         */
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
+     * Интерфейс вывода в поток двоичного дерева поиска.
+     */
+    public final IntDisplay out = new IntDisplay(this::display, "<<< Red-Black tree: ", ">>>");
+
+    /**
+     * Создает пустое красно-черное дерево {@code RBTree}
      */
     public RBTree() {
 
     }
+
+    /**
+     * Получает код цвета по умолчанию при выводе текста в консоль.
+     * @return цвета по умолчанию.
+     */
+    public String getTextColorDefault() {
+        return eColor.BLACK.getValue();
+    }
+
+    /**
+     * Получает код красного цвета при выводе текста в консоль.
+     * @param node узел дерева.
+     * @return код красного цвета.
+     */
+    public String getTextColorNode(BSNode<K, V> node) {
+        return node.getIsRed() ? eColor.RED.getValue() : eColor.BLACK.getValue();
+    }
+
+    /**
+     * Получает символ красного цвета при выводе текста в файл.
+     * @param node узел дерева.
+     * @return символ красного цвета, например, "*"
+     */
+    public String getRedSymbolNode(BSNode<K, V> node) {
+        return node.getIsRed() ? AppConstants.SYMBOL_RED : "";
+    }
+
     /**
      * Рекурсивно вывести информацию с пометкой "red:" всех обнаруженных узлов дерева, входящих в красные линии.
      * В дереве не должно быть красных линий (два красных узла рядом: красный родитель имеет соседнего красного потомка).
@@ -24,7 +96,7 @@ public class RBTree extends BSTree {
      * @param node узел, с которого начинается рекурсивный поиск красных линий.
      * @param nRed значение, в котором аккумулируется количество непрерывно найденных красных соседних узлов.
      */
-    public void alarmRedLines(Node node, int nRed) {
+    public void alarmRedLines(BSNode<K, V> node, int nRed) {
         if(node == null) {
             return;
         }
@@ -39,6 +111,7 @@ public class RBTree extends BSTree {
         alarmRedLines(node.getLeftChild(), nRed);
         alarmRedLines(node.getRightChild(), nRed);
     }
+
     /**
      * Добавить узел в дерево.
      * @param key целочисленное значение ключа дерева.
@@ -46,13 +119,13 @@ public class RBTree extends BSTree {
      * @return добавленный узел.
      */
     @Override
-    public Node add(int key, String data) {
-        Node result;
-        Node current;
-        Node parent;
-        Node grand;
-        Node grand2;
-        Node grand3;
+    public BSNode<K, V> add(K key, V data) {
+        BSNode<K, V> result;
+        BSNode<K, V> current;
+        BSNode<K, V> parent;
+        BSNode<K, V> grand;
+        BSNode<K, V> grand2;
+        BSNode<K, V> grand3;
 
         int nRed;
         current = getRoot();
@@ -60,7 +133,8 @@ public class RBTree extends BSTree {
         grand = null;
         grand2 = null;
         nRed = 0;
-        while (current != null && current.getKey() != key) {
+//        while (current != null && current.getKey() != key) {
+        while (current != null && current.compareToOther(key) != 0) {
             grand3 = grand2;
             grand2 = grand;
             grand = parent;
@@ -75,7 +149,8 @@ public class RBTree extends BSTree {
                 // Обработка ДО добавления узла
                 checkColorsBeforeInsert(parent, grand, grand2, grand3);
             }
-            if (key < current.getKey()) {
+//            if (key < current.getKey()) {
+            if (current.compareToOther(key) > 0) {
                 current = current.getLeftChild();
             } else {
                 current = current.getRightChild();
@@ -101,7 +176,7 @@ public class RBTree extends BSTree {
      * @param grand2 узел - родственник предыдущего родственника.
      * @param grand3 узел - родственник предыдущего родственника.
      */
-    public void checkColorsBeforeInsert(Node parent, Node grand, Node grand2, Node grand3) {
+    public void checkColorsBeforeInsert(BSNode<K, V> parent, BSNode<K, V> grand, BSNode<K, V> grand2, BSNode<K, V> grand3) {
         turnRedLine(parent, grand, grand2, grand3);
     }
     /**
@@ -111,7 +186,7 @@ public class RBTree extends BSTree {
      * @param grand2 узел - родственник предыдущего родственника.
      * @param grand3 узел - родственник предыдущего родственника.
      */
-    public void checkColorsAfterInsert(Node parent, Node grand, Node grand2, Node grand3) {
+    public void checkColorsAfterInsert(BSNode<K, V> parent, BSNode<K, V> grand, BSNode<K, V> grand2, BSNode<K, V> grand3) {
         turnRedLine(parent, grand, grand2, grand3);
         setColorsTriangle(grand);
         correctOppositeSide(grand);
@@ -120,17 +195,17 @@ public class RBTree extends BSTree {
      * Проверить и при необходимости внести изменения в окраску узлов на стороне дерева противоположной относительно корневой вершины стороне поворота красной линии.
      * @param node узел - который может образовать красную линию.
      */
-    public void correctOppositeSide(Node node) {
+    public void correctOppositeSide(BSNode<K, V> node) {
         if(node == null) {
             return;
 
         }
-        int key = node.getKey();
-        Node current;
-        Node parent;
-        Node grand;
-        Node grand2;
-        Node grand3;
+        K key = node.getKey();
+        BSNode<K, V> current;
+        BSNode<K, V> parent;
+        BSNode<K, V> grand;
+        BSNode<K, V> grand2;
+        BSNode<K, V> grand3;
 
         current = getRoot();
         parent = null;
@@ -145,7 +220,8 @@ public class RBTree extends BSTree {
                 turnRedLine(current, grand, grand2, grand3);
                 break;
             }
-            if (key < current.getKey()) {
+//            if (key < current.getKey()) {
+            if (current.compareToOther(key) > 0) {
                 current = current.getLeftChild();
             } else {
                 current = current.getRightChild();
@@ -156,14 +232,14 @@ public class RBTree extends BSTree {
      * Переключить цвета узлов в треугольнике, нарушающих правило RDTree: Оба потомка каждого красного узла — чёрные.
      * @param parent верхний узел (вершина) треугольника, у которого обязательно должны быть два дочерних узла (нижние вершины).
      */
-    public void setColorsTriangle(Node parent) {
+    public void setColorsTriangle(BSNode<K, V> parent) {
         if(parent == null) {
             return;
         }
 
         // Получить потомков верхнего узла треугольника (нижние вершины)
-        Node childLeft = parent.getLeftChild();
-        Node childRight = parent.getRightChild();
+        BSNode<K, V> childLeft = parent.getLeftChild();
+        BSNode<K, V> childRight = parent.getRightChild();
 
         // Цвета переключаются только для треугольника
         if(childLeft == null || childRight == null) {
@@ -188,7 +264,7 @@ public class RBTree extends BSTree {
      * @param grand узел - родственник предыдущего родственника.
      * @param grand2 узел - родственник предыдущего родственника.
      */
-    public void turnRedLine(Node node, Node parent, Node grand, Node grand2) {
+    public void turnRedLine(BSNode<K, V> node, BSNode<K, V> parent, BSNode<K, V> grand, BSNode<K, V> grand2) {
         if(grand == null || node == null) {
             return;
         }
@@ -296,7 +372,6 @@ public class RBTree extends BSTree {
                     // G
                     // ---- P
                     // -- N
-                    // 11.left = 12
 
                     // <<< Поворот вправо красной линии (N + P) (случай 4 wiki)
                     grand.setRightChild(node);
@@ -324,5 +399,108 @@ public class RBTree extends BSTree {
             }
         }
     }
+    /**
+     * Расчет позиционирования дерева, влияющий на получение оптимальной ширины вывода дерева.
+     * @return количество пробелов позиционирования дерева.
+     */
+    private int getCalcBlanks(DualOutput out) {
+        int nLevel = getNLevelTree();
+        int nMax = getEstimateMaxValue();
+        if(out.getUseFile()) {
+            nMax = nMax + AppConstants.SYMBOL_RED.length();
+        }
+        if(out.getUseFile()) {
+            // при выводе в файл
+            nLevel = nLevel + (nMax) / 3 - 1;
+        }
+        else {
+            // при выводе в консоль
+            nLevel = nLevel + (nMax) / 2 - 1;
+        }
+        return (int) Math.pow(2, nLevel);
+    }
 
+
+    // DISPLAY
+
+    @Override
+    public void display(int blanks, DualOutput out) {
+        // Инициатор выводит свои верхнее и нижнее оформления сообщения и отключает их вывод в цепочке объектов.
+        String header = out.getHeader() != null ? out.getHeaderOnce() : this.out.getHeader();
+        String footer = out.getFooter() != null ? out.getFooterOnce() : this.out.getFooter();
+
+        Stack<BSNode<K, V>> global = new Stack<>();
+        global.push(getRoot());
+        int nBlank;
+        if(blanks > 0) {
+            nBlank = MathUtils.getBinaryRound(blanks);
+        } else {
+            // Расчет позиционирования
+            nBlank = getCalcBlanks(out);
+        }
+        if(AppConstants.MAX_BLANKS > 0 && nBlank > AppConstants.MAX_BLANKS) {
+            nBlank = MathUtils.getBinaryRound(AppConstants.MAX_BLANKS);
+        }
+        boolean isNewRow = true;
+
+        // header
+        out.println(header + "(blanks = " + nBlank + "): ");
+
+        while(isNewRow) {
+            isNewRow = false;
+            Stack<BSNode<K, V>> local = new Stack<>();
+            for(int j = 0; j < nBlank; ++j) {
+                out.print(" ");
+            }
+            while(!global.isEmpty()) {
+                BSNode<K, V> current = global.pop();
+                int len;
+                if(current != null) {
+                    String value = "";
+                    int valLenght = 0;
+                    if (current.getValue() != null) {
+                        value = current.getValue().toString();
+                        if(value.equals(AppConstants.UNIX_NEW_ROW)) {
+                            value = AppConstants.PRINT_NEW_ROW;
+                        }
+                        else {
+                            value = "/" + value;
+                        }
+                        valLenght = value.length();
+                    }
+                    String sRed = "";
+                    if(out.getUseFile()) {
+                        sRed = getRedSymbolNode(current);
+                        out.print(sRed + current.getKey().toString() + value);
+                    }
+                    else {
+                        out.print(getTextColorNode(current) + current.getKey().toString() + value + getTextColorDefault());
+                    }
+                    len = current.getKey().toString().length() + valLenght + sRed.length();
+                    local.push(current.getLeftChild());
+                    local.push(current.getRightChild());
+                    if (current.getLeftChild() != null || current.getRightChild() != null) {
+                        isNewRow = true;
+                    }
+                }
+                else {
+                    out.print("--");
+                    len = 2;
+                    local.push(null);
+                    local.push(null);
+                }
+                for(int j = 0; j < nBlank * 2 - (len); ++j) {
+                    out.print(" ");
+                }
+            }
+            out.println("");
+            nBlank /= 2;
+            while(!local.isEmpty()) {
+                global.push(local.pop());
+            }
+        }
+        // footer
+        out.println(footer);
+
+    }
 }
