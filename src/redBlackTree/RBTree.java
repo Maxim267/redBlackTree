@@ -15,6 +15,8 @@ import java.util.Stack;
  * Листовой узел не имеет потомков.
  * @see <a href="https://ru.wikipedia.org/wiki/%D0%9A%D1%80%D0%B0%D1%81%D0%BD%D0%BE-%D1%87%D1%91%D1%80%D0%BD%D0%BE%D0%B5_%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE">Красно-черное дерево</a>
  * В коде пометки "wiki" соответствуют случаям в web-описании, например, "случай 5 wiki".
+ * При добавлении узла в RB tree может нарушиться условие: "Оба потомка любого красного узла - черные".
+ * Такое нарушенное условие далее в комментариях обозначено как "красная линия".
  * @param <K> тип ключей, поддерживаемых этим деревом.
  * @param <V> тип соответствующих ключам данных.
  */
@@ -52,12 +54,12 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
     }
 
     /**
-     * Интерфейс вывода в поток двоичного дерева поиска.
+     * Интерфейс вывода в поток красно-черного дерева.
      */
     public final IntDisplay out = new IntDisplay(this::display, "<<< Red-Black tree: ", ">>>");
 
     /**
-     * Создает пустое красно-черное дерево {@code RBTree}
+     * Создает пустое красно-черное дерево.
      */
     public RBTree() {
 
@@ -83,17 +85,17 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
     /**
      * Получает символ красного цвета при выводе текста в файл.
      * @param node узел дерева.
-     * @return символ красного цвета, например, "*"
+     * @return символ красного цвета, например, "*".
      */
     public String getRedSymbolNode(BSNode<K, V> node) {
         return node.getIsRed() ? AppConstants.SYMBOL_RED : "";
     }
 
     /**
-     * Рекурсивно вывести информацию с пометкой "red:" всех обнаруженных узлов дерева, входящих в красные линии.
-     * В дереве не должно быть красных линий (два красных узла рядом: красный родитель имеет соседнего красного потомка).
+     * Рекурсивно выводит информацию с пометкой "red:" узлов дерева, входящих в "красные линии".
+     * Наличие "красных линий" свидетельствует о некорректной структуре дерева.
      * При правильной структуре дерева этот метод не должен выводить информацию с пометкой "red:".
-     * @param node узел, с которого начинается рекурсивный поиск красных линий.
+     * @param node узел, с которого начинается рекурсивный поиск "красных линий".
      * @param nRed значение, в котором аккумулируется количество непрерывно найденных красных соседних узлов.
      */
     public void alarmRedLines(BSNode<K, V> node, int nRed) {
@@ -113,13 +115,13 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
     }
 
     /**
-     * Добавить узел в дерево.
-     * @param key целочисленное значение ключа дерева.
-     * @param data строковые данные как парное значение ключа.
+     * Добавляет узел в дерево.
+     * @param key ключ узла дерева.
+     * @param value данные узла дерева.
      * @return добавленный узел.
      */
     @Override
-    public BSNode<K, V> add(K key, V data) {
+    public BSNode<K, V> add(K key, V value ) {
         BSNode<K, V> result;
         BSNode<K, V> current;
         BSNode<K, V> parent;
@@ -133,7 +135,6 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
         grand = null;
         grand2 = null;
         nRed = 0;
-//        while (current != null && current.getKey() != key) {
         while (current != null && current.compareToOther(key) != 0) {
             grand3 = grand2;
             grand2 = grand;
@@ -149,7 +150,6 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
                 // Обработка ДО добавления узла
                 checkColorsBeforeInsert(parent, grand, grand2, grand3);
             }
-//            if (key < current.getKey()) {
             if (current.compareToOther(key) > 0) {
                 current = current.getLeftChild();
             } else {
@@ -159,7 +159,7 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
 
         if(current == null) {
             // Добавление узла
-            result = super.add(key, data);
+            result = super.add(key, value);
         }
         else {
             result = current;
@@ -169,9 +169,10 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
 
         return result;
     }
+
     /**
      * Проверить и при необходимости внести изменения в окраску узлов дерева ДО добавления узла.
-     * @param parent узел - ближайший родственник узла, который может образовывать красную линию (от которой необходимо избавиться ее поворотом).
+     * @param parent узел - ближайший родственник узла.
      * @param grand узел - родственник предыдущего родственника.
      * @param grand2 узел - родственник предыдущего родственника.
      * @param grand3 узел - родственник предыдущего родственника.
@@ -179,9 +180,10 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
     public void checkColorsBeforeInsert(BSNode<K, V> parent, BSNode<K, V> grand, BSNode<K, V> grand2, BSNode<K, V> grand3) {
         turnRedLine(parent, grand, grand2, grand3);
     }
+
     /**
      * Проверить и при необходимости внести изменения в окраску узлов дерева ПОСЛЕ добавления узла.
-     * @param parent узел - ближайший родственник узла, который может образовывать красную линию (от которой необходимо избавиться ее поворотом).
+     * @param parent узел - ближайший родственник узла.
      * @param grand узел - родственник предыдущего родственника.
      * @param grand2 узел - родственник предыдущего родственника.
      * @param grand3 узел - родственник предыдущего родственника.
@@ -191,9 +193,11 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
         setColorsTriangle(grand);
         correctOppositeSide(grand);
     }
+
     /**
-     * Проверить и при необходимости внести изменения в окраску узлов на стороне дерева противоположной относительно корневой вершины стороне поворота красной линии.
-     * @param node узел - который может образовать красную линию.
+     * Проверить и при необходимости внести изменения в окраску узлов на стороне дерева
+     * противоположной стороне поворота "красной линии" относительно корневой вершины.
+     * @param node узел, который может образовать "красную линию".
      */
     public void correctOppositeSide(BSNode<K, V> node) {
         if(node == null) {
@@ -220,7 +224,6 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
                 turnRedLine(current, grand, grand2, grand3);
                 break;
             }
-//            if (key < current.getKey()) {
             if (current.compareToOther(key) > 0) {
                 current = current.getLeftChild();
             } else {
@@ -229,8 +232,9 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
         }
     }
     /**
-     * Переключить цвета узлов в треугольнике, нарушающих правило RDTree: Оба потомка каждого красного узла — чёрные.
-     * @param parent верхний узел (вершина) треугольника, у которого обязательно должны быть два дочерних узла (нижние вершины).
+     * Переключает цвета узлов в треугольнике для исправления "красных линий".
+     * Треугольник представлен верхним узлом (верхней вершиной) и двумя его потомками (нижними вершинами).
+     * @param parent верхний узел треугольника.
      */
     public void setColorsTriangle(BSNode<K, V> parent) {
         if(parent == null) {
@@ -257,10 +261,11 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
         childLeft.setIsRed(false);
         childRight.setIsRed(false);
     }
+
     /**
-     * Повернуть красную линию.
-     * @param node узел, который, возможно, входит в красную линию.
-     * @param parent узел - ближайший родственник узла node, который, возможно, также входит в красную линию.
+     * Поворачивает "красную линию".
+     * @param node узел, который, возможно, входит в "красную линию".
+     * @param parent узел - ближайший родственник узла node, который, возможно, также входит в "красную линию".
      * @param grand узел - родственник предыдущего родственника.
      * @param grand2 узел - родственник предыдущего родственника.
      */
@@ -274,7 +279,7 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
             // Родитель левый
             if(parent == grand.getLeftChild()) {
 
-                // Правый поворот левой красной линии (N + P) с внешним внуком (N)
+                // Правый поворот левой "красной линии' (N + P) с внешним внуком (N)
 
                 // ---- G
                 // -- P
@@ -283,7 +288,7 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
                 // Связь красных узлов обнаружена как левая
                 if(node == parent.getLeftChild()){
 
-                    // <<< Поворот вправо красной линии (N + P) (случай 5 wiki)
+                    // <<< Поворот вправо "красной линии" (N + P) (случай 5 wiki)
                     grand.setLeftChild(parent.getRightChild());
                     if(grand == getRoot()) {
                         setRoot(parent);
@@ -301,7 +306,7 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
                     // >>>
                 }
 
-                // Правый поворот левой красной линии (N + P) с внутренним внуком (N)
+                // Правый поворот левой "красной линии" (N + P) с внутренним внуком (N)
 
                 //  ------ G
                 //  -- P
@@ -310,13 +315,13 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
                 // Связь красных узлов обнаружена как правая
                 else {
 
-                    // <<< Поворот влево красной линии (N + P) (случай 4 wiki)
+                    // <<< Поворот влево "красной линии" (N + P) (случай 4 wiki)
                     grand.setLeftChild(node);
                     parent.setRightChild(node.getLeftChild());
                     node.setLeftChild(parent);
                     // >>>
 
-                    // <<< Поворот вправо красной линии (P + N) (случай 5 wiki)
+                    // <<< Поворот вправо "красной линии" (P + N) (случай 5 wiki)
                     grand.setLeftChild(node.getRightChild());
                     if(grand == getRoot()) {
                         setRoot(node);
@@ -338,7 +343,7 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
             // Родитель правый
             else {
 
-                // Левый поворот правой красной линии (N + P) с внешним внуком (N)
+                // Левый поворот правой "красной линии" (N + P) с внешним внуком (N)
 
                 // G
                 // ---- P
@@ -347,7 +352,7 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
                 // Связь красных узлов обнаружена как правая
                 if(node == parent.getRightChild()){
 
-                    // <<< Поворот влево красной линии (P + N) (случай 5 wiki)
+                    // <<< Поворот влево "красной линии" (P + N) (случай 5 wiki)
                     grand.setRightChild(parent.getLeftChild());
                     if(grand == getRoot()) {
                         setRoot(parent);
@@ -367,19 +372,19 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
                 // Связь красных узлов обнаружена как левая
                 else {
 
-                    // Левый поворот правой красной линии (N + P) с внутренним внуком (N)
+                    // Левый поворот правой "красной линии" (N + P) с внутренним внуком (N)
 
                     // G
                     // ---- P
                     // -- N
 
-                    // <<< Поворот вправо красной линии (N + P) (случай 4 wiki)
+                    // <<< Поворот вправо "красной линии" (N + P) (случай 4 wiki)
                     grand.setRightChild(node);
                     parent.setLeftChild(node.getRightChild());
                     node.setRightChild(parent);
                     // >>>
 
-                    // <<< Поворот влево красной линии (P + N) (случай 5 wiki)
+                    // <<< Поворот влево "красной линии" (P + N) (случай 5 wiki)
                     grand.setRightChild(node.getLeftChild());
                     if (grand == getRoot()) {
                         setRoot(node);
@@ -399,8 +404,9 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
             }
         }
     }
+
     /**
-     * Расчет позиционирования дерева, влияющий на получение оптимальной ширины вывода дерева.
+     * Рассчитывает позиционирование дерева, влияющее на получение оптимальной ширины вывода дерева.
      * @return количество пробелов позиционирования дерева.
      */
     private int getCalcBlanks(DualOutput out) {

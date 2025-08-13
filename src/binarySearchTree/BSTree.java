@@ -49,7 +49,7 @@ public class BSTree<K extends Comparable<K>, V> implements IntOutput {
 
     /**
      * Устанавливает корневой узел дерева.
-     * @param root корневой узел
+     * @param root корневой узел.
      */
     public void setRoot(BSNode<K, V> root) {
         this.root = root;

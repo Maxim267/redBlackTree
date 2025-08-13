@@ -43,7 +43,7 @@ public class BSNode<K extends Comparable<K>, V> implements Output {
     private BSNode<K, V> rightChild;
 
     /**
-     * Интерфейс вывода в поток узла.
+     * Интерфейс вывода в поток узла двоичного дерева.
      */
     public final Display out = new Display(this::display, "<<<Tree node: ", ">>>");
 
