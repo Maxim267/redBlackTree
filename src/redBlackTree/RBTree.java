@@ -135,6 +135,7 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
         grand = null;
         grand2 = null;
         nRed = 0;
+        Boolean isLeft = null;
         while (current != null && current.compareToOther(key) != 0) {
             grand3 = grand2;
             grand2 = grand;
@@ -151,13 +152,25 @@ public class RBTree<K extends Comparable<K>, V> extends BSTree<K, V> {
                 checkColorsBeforeInsert(parent, grand, grand2, grand3);
             }
             if (current.compareToOther(key) > 0) {
+                isLeft = true;
                 current = current.getLeftChild();
             } else {
+                isLeft = false;
                 current = current.getRightChild();
             }
         }
 
-        if(current == null) {
+        if(parent != null) {
+            result = new BSNode<>(key, value);
+            incSize();
+            if(isLeft) {
+                parent.setLeftChild(result);
+            }
+            else {
+                parent.setRightChild(result);
+            }
+        }
+        else if(current == null) {
             // Добавление узла
             result = super.add(key, value);
         }
