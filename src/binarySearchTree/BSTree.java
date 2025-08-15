@@ -64,6 +64,13 @@ public class BSTree<K extends Comparable<K>, V> implements IntOutput {
     }
 
     /**
+     * Инкрементирует размер дерева.
+     */
+    public void incSize() {
+        size++;
+    }
+
+    /**
      * Добавляет узел в дерево с данными.
      * Уникальность элементов по ключу {@code K} поддерживается.
      * @param key значение ключа узла.
@@ -165,14 +172,14 @@ public class BSTree<K extends Comparable<K>, V> implements IntOutput {
     public void findNodeExt(K key) {
         BSNode<K, V> node = findNode(key);
         if (node != null) {
-            System.out.print("Node is found: key = " + node.getKey() + "; value = " + (node.getValue() != null ? node.getValue() : "null") + "; ");
+            System.out.print("Node is found: " + node.toString() + "; ");
             BSNode<K, V> child = node.getLeftChild();
             if (child != null) {
-                System.out.print("Left: " + child.getKey() + "; ");
+                System.out.print("Left: " + child.toString() + "; ");
             }
             child = node.getRightChild();
             if (child != null) {
-                System.out.println("Right: " + child.getKey() + "; ");
+                System.out.println("Right: " + child.toString() + "; ");
             }
         }
         else {

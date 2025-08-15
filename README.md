@@ -27,15 +27,15 @@ RBTree<Integer, String> **tree** = new RBTree<>();<br/>
 >> - **tree**.out.display(0, "file.txt"); - вывод в файл<br/>
 
 - Результат запуска приложения
-> O - **Сравнение** формирования деревьев с целыми и строковыми ключами (с данными)<br/>
-![Random keys](./img/Compare_trees.png)
+> I - **возрастание** строковых ключей<br/>
+![Random keys](./img/Increasing_string_keys.png)
 
-> I - последовательное **возрастание** целых ключей.<br/>
-![Increasing keys](./img/Increasing_keys.png)
+> I - **возрастание** целочисленных ключей.<br/>
+![Increasing keys](./img/Increasing_int_keys.png)
 
-> II - последовательное **убывание** целых ключей.<br/>
-![Decreasing keys](./img/Decreasing_keys.png)
+> II - **убывание** целочисленных ключей.<br/>
+![Decreasing keys](./img/Decreasing_int_keys.png)
 
-> III - **случайные** целые ключи.<br/>
-![Random keys](./img/Random_keys.png)
+> III - **случайные** целочисленные ключи.<br/>
+![Random keys](./img/Random_int_keys.png)
 <br>
