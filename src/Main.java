@@ -149,7 +149,7 @@ public class Main {
         // tree.out.display(0, "file.txt");
 
         // Поиск узла по строковому ключу (кодовой точке int)
-        // tree.findNodeExt(String.valueOf(Character.toChars(2 + (127900 - 1)))); // 10 - порядковый номер символа в дереве; (127900 - 1): offset in IncreasingStringKey
+        // tree.findNodeExt(String.valueOf(Character.toChars(2 + (127900 - 1)))); // 2 - порядковый номер символа в дереве; (127900 - 1): offset
 
         // Проверить на наличие красных линий (их не должно быть).
         // Не рекомендуется использовать этот рекурсивный метод для огромных деревьев, чтобы не получить ошибку переполнения стека.
