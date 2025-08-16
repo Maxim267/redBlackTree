@@ -1,9 +1,9 @@
 import redBlackTree.RBTree;
+import utils.constants.AppConstants;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -20,7 +20,7 @@ class TestDebug {
     }
 
     // I - на возрастание строковых ключей
-    public static RBTree<String, Integer> IncreasingStringKey(int count) {
+    public static RBTree<String, Integer> IncreasingStringKey(int startCodePoint, int count) {
         System.out.println("Красно-черное дерево со строковыми ключами на возрастание:");
 
         // Создать красно-черное дерево со СТРОКОВЫМ ключом
@@ -30,11 +30,11 @@ class TestDebug {
         // Время начала обработки
         long start = System.nanoTime();
 
-        // Используя заданный набор символов UTF_16
-        Charset charset = StandardCharsets.UTF_16;
+        // Используя заданный набор символов
+        Charset charset = AppConstants.STD_CHARSET;
         CharsetEncoder encoder = charset.newEncoder();
         // int first = 65; // Начать с "A"
-        int first = 127900; // Кодовая точка Символа, например, эмодзи (emoji)
+        int first = startCodePoint;
         int last = first + count - 1;
         IntStream.rangeClosed(first, last)
                 .filter(cp -> {
@@ -50,8 +50,12 @@ class TestDebug {
         // Время окончания обработки
         long finish = System.nanoTime();
 
-        TestDebug.Info(first, last, start, finish, tree.getRoot().getKey() + " (" + tree.getRoot().getKey().codePoints().toArray()[0] + ")", tree.size());
-
+        if(tree.getRoot() != null) {
+            TestDebug.Info(first, last, start, finish, tree.getRoot().getKey() + " (" + tree.getRoot().getKey().codePoints().toArray()[0] + ")", tree.size());
+        }
+        else {
+            TestDebug.Info(first, last, start, finish, "null" + " ( null )", tree.size());
+        }
         return tree;
 
     }
@@ -134,11 +138,11 @@ class TestDebug {
 }
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Пример обработки параметризованных деревьев RBTree<K, V>
 
         // I - возрастание строковых ключей.
-        RBTree<String, Integer> tree = TestDebug.IncreasingStringKey(19);
+        RBTree<String, Integer> tree = TestDebug.IncreasingStringKey(127900, 19);  // 127900=emoji; 65=A;
         tree.out.display(0);
 
         // При выводе в файл ключ красного узла предваряется символом "*" (используется AppConstants.SYMBOL_RED)

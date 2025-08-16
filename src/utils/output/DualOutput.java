@@ -66,7 +66,7 @@ public class DualOutput extends OutputDecorator implements AutoCloseable {
      */
     public DualOutput(String fileName, Charset charset) throws IOException {
         useFile = true;
-        fileWriter = new PrintWriter(new FileWriter(fileName, charset));
+        fileWriter = new PrintWriter(fileName, charset);
     }
 
     /**
